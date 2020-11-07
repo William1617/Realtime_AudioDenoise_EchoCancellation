@@ -22,7 +22,7 @@ Input format of denoise function is 16KHz, fp32 pcm.<br/>
 ## TIPS
 I've tested project on armv7 1GHz environment and got realtime performance.<br/>
 If performance not match your need, you can use quantized model in models folder and tried to input 8Khz directly instead of 16Khz pcm**.<br/>
-** I've tested 8Khz pcm directly without resampling and got x2 speed up, good quality on test samples. (Not recommended)
+** I've tested 8Khz pcm directly without resampling and got x2 speed up, reasonable quality on test samples. (Not recommended)
 
 
 #### Personally thanks to breizhn for his great work
