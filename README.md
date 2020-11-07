@@ -10,6 +10,14 @@ I've included all the dependencies for wav, tflite, fft, resampling.<br/>
 Also I've included pretrained tflite models from DTLN project.<br/>
 So you can test project using raw pcm or wav files in varous format.<br/>
 
+## USAGE
+You can create multiple instances.
+Please refer to project for detailed usage.
+
+    void tflite_create(trg_engine* engine)
+    void trg_denoise(trg_engine* engine, float* samples, float* out, int sampleCount)
+    void tflite_destroy(trg_engine* engine)
+
 ## TIPS
 I've tested project on armv7 1GHz environment and got realtime performance.<br/>
 If performance not match your need, you can use quantized model in models folder and tried to input 8Khz directly. (Not recommended)<br/>
