@@ -366,7 +366,7 @@ void audio_denoise(char* in_file, char* out_file) {
     trg_engine eng1;
     tflite_create(&eng1);
 
-    int blockCount = inSampleCount / (BLOCK_SIZE * 2);        // 8khz
+    int blockCount = inSampleCount / BLOCK_SIZE;
     float f32_sample[BLOCK_SIZE * 2];
     float outBuffer_f32_16khz[BLOCK_SIZE * 2];
 
@@ -378,7 +378,7 @@ void audio_denoise(char* in_file, char* out_file) {
         s16_8khz_to_f32_16khz(inBuffer_s16_8k, f32_sample, BLOCK_SIZE);         
 
         trg_denoise(&eng1, f32_sample, outBuffer_f32_16khz, BLOCK_SIZE * 2);
-        inBuffer_s16_8k += BLOCK_SIZE * 2;
+        inBuffer_s16_8k += BLOCK_SIZE;
 
         fwrite(outBuffer_f32_16khz, BLOCK_SIZE * 2, 4, fpf32);
     }
