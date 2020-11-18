@@ -1,14 +1,14 @@
 # Realtime_AudioDenoise_EchoCancellation
 
 This project is c++ port of DTLN denoise.<br/>
-For doise and AEC purpose, I've tried speex, webrtc, rnnoise and etc, but didn't find optimal solution (realtime & performance).<br/>
+For denoise and AEC purpose, I've tried speex, webrtc, rnnoise and etc, but didn't find optimal solution (realtime & performance).<br/>
 Lately, I found DTLN solution by [**breizhn**](https://github.com/breizhn).<br/>
 DTLN not only performs denoising, but also has deecho effect.<br/>
 
 It's VC++ project, but use pure c++, so you can adopt to any platforms.<br/>
 I've included all the dependencies for wav, tflite, fft, resampling.<br/>
 Also I've included pretrained tflite models from DTLN project.<br/>
-So you can test project using raw pcm or wav files in varous format.<br/>
+So you can test project using raw pcm or wav files in various format.<br/>
 
 ## USAGE
 You can create multiple instances.<br/>
