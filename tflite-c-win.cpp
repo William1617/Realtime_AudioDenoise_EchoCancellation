@@ -127,6 +127,7 @@ int main(int argc, char* argv[]) {
 #define block_shift		128
 #define fft_out_size    (block_len / 2 + 1)
 #define BLOCK_SIZE 256
+#define STATE_SIZE 512
 
 using namespace pocketfft;
 using namespace std;
@@ -135,8 +136,8 @@ typedef complex<double> cpx_type;
 struct trg_engine {
     float in_buffer[block_len] = { 0 };
     float out_buffer[block_len] = { 0 };
-    float states_1[block_len] = { 0 };
-    float states_2[block_len] = { 0 };
+    float states_1[STATE_SIZE] = { 0 };
+    float states_2[STATE_SIZE] = { 0 };
 
     TfLiteTensor* input_details_1[2], * input_details_2[2];
     const TfLiteTensor* output_details_1[2], * output_details_2[2];
@@ -290,14 +291,14 @@ void tflite_infer(trg_engine* engine)
     calc_mag_phase(fft_res, in_mag, in_phase, fft_out_size);
 
     memcpy(engine->input_details_1[0]->data.f, in_mag, fft_out_size * sizeof(float));
-    memcpy(engine->input_details_1[1]->data.f, engine->states_1, block_len * sizeof(float));
+    memcpy(engine->input_details_1[1]->data.f, engine->states_1, STATE_SIZE * sizeof(float));
 
     if (TfLiteInterpreterInvoke(engine->interpreter_1) != kTfLiteOk) {
         printf("Error invoking detection model");
     }
 
     float* out_mask = engine->output_details_1[0]->data.f;
-    memcpy(engine->states_1, engine->output_details_1[1]->data.f, block_len * sizeof(float));
+    memcpy(engine->states_1, engine->output_details_1[1]->data.f, STATE_SIZE * sizeof(float));
 
     for (int i = 0; i < fft_out_size; i++)
         fft_res[i] = cpx_type(in_mag[i] * out_mask[i] * cosf(in_phase[i]), in_mag[i] * out_mask[i] * sinf(in_phase[i]));
@@ -307,14 +308,14 @@ void tflite_infer(trg_engine* engine)
         estimated_block[i] = fft_in[i] / block_len;
 
     memcpy(engine->input_details_2[0]->data.f, estimated_block, block_len * sizeof(float));
-    memcpy(engine->input_details_2[1]->data.f, engine->states_2, block_len * sizeof(float));
+    memcpy(engine->input_details_2[1]->data.f, engine->states_2, STATE_SIZE * sizeof(float));
 
     if (TfLiteInterpreterInvoke(engine->interpreter_2) != kTfLiteOk) {
         printf("Error invoking detection model");
     }
 
     float* out_block = engine->output_details_2[0]->data.f;
-    memcpy(engine->states_2, engine->output_details_2[1]->data.f, block_len * sizeof(float));
+    memcpy(engine->states_2, engine->output_details_2[1]->data.f, STATE_SIZE * sizeof(float));
 
     memmove(engine->out_buffer, engine->out_buffer + block_shift, (block_len - block_shift) * sizeof(float));
     memset(engine->out_buffer + (block_len - block_shift), 0, block_shift * sizeof(float));
